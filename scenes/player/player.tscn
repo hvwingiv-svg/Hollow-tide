@@ -1,0 +1,52 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="Resource" path="res://data/player_movement.tres" id="2_data"]
+[ext_resource type="Script" path="res://scripts/components/input_component.gd" id="3_input"]
+[ext_resource type="Script" path="res://scripts/state_machine/state_machine.gd" id="4_machine"]
+[ext_resource type="Script" path="res://scripts/player/states/idle_state.gd" id="5_idle"]
+[ext_resource type="Script" path="res://scripts/player/states/run_state.gd" id="6_run"]
+[ext_resource type="Script" path="res://scripts/player/states/air_state.gd" id="7_air"]
+[ext_resource type="Script" path="res://scripts/player/states/roll_state.gd" id="8_roll"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(12, 28)
+
+[node name="Player" type="CharacterBody2D" groups=["players"]]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_player")
+data = ExtResource("2_data")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Body" type="Polygon2D" parent="Visual"]
+color = Color(0.86, 0.88, 0.9, 1)
+polygon = PackedVector2Array(-6, -28, 6, -28, 6, 0, -6, 0)
+
+[node name="Visor" type="Polygon2D" parent="Visual"]
+color = Color(0.12, 0.14, 0.17, 1)
+polygon = PackedVector2Array(1, -25, 6, -25, 6, -21, 1, -21)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -14)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="InputComponent" type="Node" parent="."]
+script = ExtResource("3_input")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("4_machine")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("5_idle")
+
+[node name="Run" type="Node" parent="StateMachine"]
+script = ExtResource("6_run")
+
+[node name="Air" type="Node" parent="StateMachine"]
+script = ExtResource("7_air")
+
+[node name="Roll" type="Node" parent="StateMachine"]
+script = ExtResource("8_roll")
